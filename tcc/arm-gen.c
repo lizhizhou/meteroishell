@@ -1,7 +1,7 @@
 /*
  *  ARMv4 code generator for TCC
  * 
- *  Copyright (c) 2003 Daniel Glöckner
+ *  Copyright (c) 2003 Daniel Glï¿½ckner
  *
  *  Based on i386-gen.c by Fabrice Bellard
  *
@@ -184,6 +184,20 @@ static int two2mask(int a,int b) {
 
 static int regmask(int r) {
   return reg_classes[r]&~(RC_INT|RC_FLOAT);
+}
+
+/* rotate n first stack elements to the bottom
+   I1 ... In -> I2 ... In I1 [top is right]
+*/
+static void vrotb(int n)
+{
+    int i;
+    SValue tmp;
+
+    tmp = vtop[-n + 1];
+    for(i=-n+1;i!=0;i++)
+        vtop[i] = vtop[i+1];
+    vtop[0] = tmp;
 }
 
 /******************************************************/

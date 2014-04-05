@@ -7,7 +7,19 @@
 
 #ifndef PLATFORM_H_
 #define PLATFORM_H_
+
 #include "FPGA.h"
+#include "PIO26.h"
+#include "PIO8.h"
+#include "shield_ctrl.h"
+#include "AM2301.h"
+#include "sht1x.h"
+#include "position_sensor.h"
+#include "step_motor.h"
+#include "brush_motor.h"
+#include "fan_motor.h"
+#include "led.h"
+#include "unit_test.h"
 
 #define LED_0               QSYS_ADDRESS_TO_LINUX_ADDRESS(0x10000100)
 #define LED_1               QSYS_ADDRESS_TO_LINUX_ADDRESS(0x10000104)

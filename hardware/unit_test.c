@@ -7,19 +7,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "platform.h"
-#include "PIO26.h"
-#include "shield_ctrl.h"
-#include "FPGA.h"
-#include "AM2301.h"
-#include "position_sensor.h"
-#include "step_motor.h"
-#include "brush_motor.h"
-#include "fan_motor.h"
-#include "syringe.h"
-#include "microscope.h"
-#include "moisture.h"
-#include "PID.h"
-#include "coordinate.h"
+#include "../lib/coordinate.h"
 #include "led.h"
 
 void AM2301_test()
@@ -34,24 +22,6 @@ void AM2301_test()
         printf("Moisture is %.2f%%", AM2301_get_moisture(AM2301_0));
         printf("\tMoisture is %.2f%% \n", AM2301_get_moisture(AM2301_1));
     }
-}
-
-void syringe_test()
-{
-    syringe_init();
-    //  while(syringe_faster_back());
-    //  printf("syringe stuck\n");
-    while(syringe_faster_forward());
-    printf("syringe stuck\n");
-    syringe_mark_start();
-    syringe_set_target(200,0);
-    syringe_run_back();
-    printf("syringe done\n");
-    sleep(5);
-    syringe_mark_start();
-    syringe_set_target(100,0);
-    syringe_run_forward();
-    printf("syringe done\n");
 }
 
 void step_motmor_test()
@@ -83,51 +53,6 @@ void brush_motor_test()
     brush_motor_back(BRUSH_MOTOR_1);
     brush_motor_init(BRUSH_MOTOR_2, 1000, 30);
     brush_motor_init(BRUSH_MOTOR_3, 1000, 30);
-}
-
-void microscope_test()  // 10um per step
-{
-    coordinates target;
-    target.x = 1000;
-    target.y = -2000;
-    target.z = 500;
-    microscope_init();
-    micorscope_run_to_coordinates(target);
-    target.x = -1000;
-    target.y = 1000;
-    target.z = -500;
-    micorscope_run_to_coordinates(target);
-    target.x = -2000;
-    target.y = -2000;
-    target.z = -500;
-    micorscope_run_to_coordinates(target);
-    target.x = 2000;
-    target.y = 2000;
-    target.z = -500;
-    micorscope_run_to_coordinates(target);
-    target.x=0;
-    target.y=0;
-    target.z=0;
-    micorscope_run_to_coordinates(target);
-    microscope_manual_calibration_on();
-
-}
-
-void wheel_plate_test()
-{
-    int i;
-    int position1 = get_position(POSITITON_SENSNOR_0);
-    int position2;
-    step_motor_init(STEP_MOTOR_0, 2000, 50);
-    printf("p1 = %d\n", position1);
-    for(i = 0; i < 20; i++)
-        step_motor_move_step_forward(STEP_MOTOR_0);
-    position2 = get_position(POSITITON_SENSNOR_0);
-    printf("p2 = %d\n", position2);
-    if (position2 - position1 > 1000)
-        printf("moving step1 %d\n", position2 - 1000 - position1);
-    else
-        printf("moving step2 %d\n", position1 - position2);
 }
 
 void PID_test()
@@ -198,33 +123,6 @@ void coordinate_test()
     r = cylindroid_to_rectangular(c);
     printf("x = %f, y = %f, z = %f\n", r.x, r.y, r.z);
     printf("30 = %f", radian_to_angle(angle_to_radian(30)));
-}
-
-void microscope_original_angle_unit_test(void)
-{
-    coordinates o;
-    float angle;
-	coordinates r[3];
-	// Case 1 for unit only
-   	r[0].x = 0;
-   	r[0].y = 100;
-   	r[1].x = 100;
-   	r[1].y = 200;
-   	r[2].x = 100;
-   	r[2].y = 0;
-    microscope_original_angle(r, &o, &angle);
-    printf("The orignial point is %d %d\n", o.x, o.y);
-   	printf("The angle is %f\n", angle);
-	// Case 2 for unit only
-	r[0].x = -305;
-	r[0].y = 340;
-	r[1].x = -755;
-	r[1].y = 1390;
-	r[2].x = -1095;
-	r[2].y = 840;
-    microscope_original_angle(r, &o, &angle);
-    printf("The orignial point is %d %d\n", o.x, o.y);
-   	printf("The angle is %f\n", angle);
 }
 
 void led_unit_test(void)

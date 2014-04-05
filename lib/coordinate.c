@@ -5,7 +5,7 @@
  *      Author: lizhizhou
  */
 #include "coordinate.h"
-
+#include <math.h>
 cylindroid rectangular_to_cylindroid(rectangular n)
 {
     cylindroid r;
