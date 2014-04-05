@@ -22,6 +22,7 @@
 #include "../hardware/brush_motor.h"
 #include "../hardware/fan_motor.h"
 #include "../hardware/unit_test.h"
+#include "../tcc/libtcc.h"
 #include "debug.h"
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -74,6 +75,71 @@ int unit_test(int argc,char* argv[])
 	return (true);
 }
 
+int cli_tcc(int argc, char **argv)
+{
+    TCCState *s;
+    int (*func)(int argc_f, char* argv_f[]);
+    char filename[128];
+
+	unsigned long led0 = LED_0;
+	unsigned long led1 = LED_1;
+	unsigned long led2 = LED_2;
+	unsigned long led3 = LED_3;
+
+    s = tcc_new();
+    if (!s) {
+    	printf("Could not create tcc state\n");
+        return 0;
+    }
+
+    /* MUST BE CALLED before any compilation */
+    tcc_set_output_type(s, TCC_OUTPUT_MEMORY);
+
+    /* as a test, we add a symbol that the compiled program can use.
+       You may also open a dll with tcc_add_dll() and use symbols from that */
+	ADD_FUNCTION(s, set_rgb_led);
+	ADD_FUNCTION(s, printf);
+	ADD_VAR(s,  led0);
+	ADD_VAR(s,  led1);
+	ADD_VAR(s,  led2);
+	ADD_VAR(s,  led3);
+
+    sscanf(argv[0],"%s", filename);
+    printf("open file %s", filename);
+    if (argc > 0)
+    {
+        if(tcc_add_file(s, filename) == -1)
+        {
+            printf("compile error\n");
+            return (false);
+        }
+    }
+    else
+    {
+        printf("Usage: tcc file\n");
+        return (false);
+    }
+    printf("compile ok \n");
+    /* relocate the code */
+    if (tcc_relocate(s, TCC_RELOCATE_AUTO) < 0)
+        return (false);
+
+    /* get entry symbol */
+    func = tcc_get_symbol(s, "main");
+    if (!func) {
+        return (false);
+    }
+    printf("function %p \n", func);
+    /* run the code */
+    func(argc--, argv++);
+
+    /* delete the state */
+    tcc_delete(s);
+
+    return (true);
+}
+
+
 static int cli_help (int argc, char *argv[])
 {
 	shell_cmd_func_t *func = shell_cmd_func_list;
@@ -101,9 +167,8 @@ int cli_debug(int argc,char* argv[])
     return (true);
 }
 
-extern int picoc(int argc, char **argv);
-
 shell_cmd_func_t shell_cmd_func_list[] = {
+	{"tcc",       "Tiny C compile",                    cli_tcc},
 	{"debug",     "on/off the debug log",              cli_debug},
 	{"help",      "Print Help Manual",                 cli_help},
     {"ut",        "Unit test of the system",           unit_test},
@@ -178,7 +243,7 @@ int gets_s(char* buffer, int buf_size)
     return (i);
 }
 
-int cli() {
+int cli(void) {
     char buffer[CLI_BUFFER_SIZE];
     char *argv[ARG_LIST_SIZE];
 

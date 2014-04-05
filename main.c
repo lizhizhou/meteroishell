@@ -8,7 +8,7 @@
 #include "shell/debug.h"
 #include "shell/shell.h"
 #include "shell/exit.h"
-#include "tcc/libtcc.h"
+
 int main(int argn, char* argv[])
 {
 //	struct sched_param param;
@@ -20,11 +20,11 @@ int main(int argn, char* argv[])
 		exit(1);
 	}
 	shield_ctrl_init();
-	if(argn == 0)
+	if(argn == 1)
 		cli();
 	else
 	{
-		FILE* file;
+		cli_tcc(--argn, ++argv);
 	}
 	fpga_close();
 	return 0;
