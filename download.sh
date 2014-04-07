@@ -1,6 +1,6 @@
 #!/usr/bin/expect -f 
 #the program file in the host PC 
-set host_file        thermal    
+set host_file        Debug/meteroishell    
 #the password of the user in lophilo board
 set lophilo_user     lophilo	      
 #the ip or hostname of lophilo board    
@@ -8,7 +8,7 @@ set lophilo_password lab123
 #the user name in lophilo board
 set lophilo_address  10.10.10.102   
 #the directory to store the program on lophilo board
-set lophilo_path     ~/test/          
+set lophilo_path     ~/ide/          
 #download program
 spawn scp $host_file $lophilo_user@$lophilo_address:$lophilo_path
 set timeout 50

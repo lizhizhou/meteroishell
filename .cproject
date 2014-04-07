@@ -31,6 +31,7 @@
 									<listOptionValue builtIn="false" value="."/>
 									<listOptionValue builtIn="false" value="shell"/>
 								</option>
+								<option id="gnu.c.compiler.option.debugging.other.684256071" name="Other debugging flags" superClass="gnu.c.compiler.option.debugging.other" value="-rdynamic" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.834012017" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.858020625" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler">

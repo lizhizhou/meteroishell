@@ -80,6 +80,7 @@ int cli_tcc(int argc, char **argv)
     TCCState *s;
     int (*func)(int argc_f, char* argv_f[]);
     char filename[128];
+    int ret;
 
 	unsigned long led0 = LED_0;
 	unsigned long led1 = LED_1;
@@ -99,6 +100,7 @@ int cli_tcc(int argc, char **argv)
        You may also open a dll with tcc_add_dll() and use symbols from that */
 	ADD_FUNCTION(s, set_rgb_led);
 	ADD_FUNCTION(s, printf);
+
 	ADD_VAR(s,  led0);
 	ADD_VAR(s,  led1);
 	ADD_VAR(s,  led2);
@@ -131,7 +133,10 @@ int cli_tcc(int argc, char **argv)
     }
     printf("function %p \n", func);
     /* run the code */
-    func(argc--, argv++);
+
+    ret = func(argc--, argv++);
+
+    printf("function ret %d \n", ret);
 
     /* delete the state */
     tcc_delete(s);
