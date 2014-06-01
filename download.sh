@@ -1,12 +1,12 @@
 #!/usr/bin/expect -f 
 #the program file in the host PC 
-set host_file        Debug/meteroishell    
+set host_file        meteroishell    
 #the password of the user in lophilo board
 set lophilo_user     lophilo	      
 #the ip or hostname of lophilo board    
 set lophilo_password lab123     
 #the user name in lophilo board
-set lophilo_address  10.10.10.102   
+set lophilo_address  192.168.1.4   
 #the directory to store the program on lophilo board
 set lophilo_path     ~/ide/          
 #download program

@@ -75,6 +75,7 @@ int unit_test(int argc,char* argv[])
 	return (true);
 }
 
+
 int cli_tcc(int argc, char **argv)
 {
     TCCState *s;
@@ -100,6 +101,8 @@ int cli_tcc(int argc, char **argv)
        You may also open a dll with tcc_add_dll() and use symbols from that */
 	ADD_FUNCTION(s, set_rgb_led);
 	ADD_FUNCTION(s, printf);
+	ADD_FUNCTION(s, sleep);
+	ADD_FUNCTION(s, usleep);
 
 	ADD_VAR(s,  led0);
 	ADD_VAR(s,  led1);
@@ -121,22 +124,20 @@ int cli_tcc(int argc, char **argv)
         printf("Usage: tcc file\n");
         return (false);
     }
-    printf("compile ok \n");
     /* relocate the code */
     if (tcc_relocate(s, TCC_RELOCATE_AUTO) < 0)
         return (false);
+
+    usleep(1000*100); // wait for ready
+    //sleep(1);
 
     /* get entry symbol */
     func = tcc_get_symbol(s, "main");
     if (!func) {
         return (false);
     }
-    printf("function %p \n", func);
     /* run the code */
-
     ret = func(argc--, argv++);
-
-    printf("function ret %d \n", ret);
 
     /* delete the state */
     tcc_delete(s);
