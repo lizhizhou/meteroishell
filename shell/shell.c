@@ -75,7 +75,6 @@ int unit_test(int argc,char* argv[])
 	return (true);
 }
 
-
 int cli_tcc(int argc, char **argv)
 {
     TCCState *s;
@@ -110,7 +109,7 @@ int cli_tcc(int argc, char **argv)
 	ADD_VAR(s,  led3);
 
     sscanf(argv[0],"%s", filename);
-    printf("open file %s", filename);
+    debuginf("open file %s\n", filename);
     if (argc > 0)
     {
         if(tcc_add_file(s, filename) == -1)
@@ -129,7 +128,6 @@ int cli_tcc(int argc, char **argv)
         return (false);
 
     usleep(1000*100); // wait for ready
-    //sleep(1);
 
     /* get entry symbol */
     func = tcc_get_symbol(s, "main");
