@@ -23,6 +23,7 @@
 #include "../hardware/fan_motor.h"
 #include "../hardware/unit_test.h"
 #include "../tcc/libtcc.h"
+#include "../api/lophilo.h"
 #include "debug.h"
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -35,43 +36,15 @@ typedef struct shell_cmd_t {
 } shell_cmd_func_t;
 extern shell_cmd_func_t shell_cmd_func_list[];
 
-int unit_test(int argc,char* argv[])
+int set_led(int argc, char **argv)
 {
-	// Unit_test
-	int i;
-	printf("1:AM2301_test\n");
-	printf("2:syringe_test\n");
-	printf("3:step_motmor_test\n");
-	printf("4:brush_motor_test\n");
-	printf("5:microscope_test\n");
-	printf("6:wheel_plate_test\n");
-	printf("7:PID_test\n");
-	printf("8:PIO_test\n");
-	printf("Input choose\n");
-	scanf("%d",&i);
-	switch(i) {
-		case 1:
-			AM2301_test();
-			break;
-		case 2:
-			break;
-		case 3:
-			step_motmor_test();
-			break;
-		case 4:
-			brush_motor_test();
-			break;
-		case 5:
-			break;
-		case 6:
-			break;
-		case 7:
-			PID_test();
-			break;
-		case 8:
-			PIO_test();
-			break;
-	}
+	int id,r,g,b;
+	sscanf(argv[0], "%d",&id);
+	sscanf(argv[1], "%d",&r);
+	sscanf(argv[2], "%d",&g);
+	sscanf(argv[3], "%d",&b);
+	debuginf("id=%d, r=%d g=%d b=%d\n", id, r, g, b);
+	led(id, (char)r,(char)g,(char)b);
 	return (true);
 }
 
@@ -82,15 +55,10 @@ int cli_tcc(int argc, char **argv)
     char filename[128];
     int ret;
 
-	unsigned long led0 = LED_0;
-	unsigned long led1 = LED_1;
-	unsigned long led2 = LED_2;
-	unsigned long led3 = LED_3;
-
     s = tcc_new();
     if (!s) {
     	printf("Could not create tcc state\n");
-        return 0;
+        return (false);
     }
 
     /* MUST BE CALLED before any compilation */
@@ -98,15 +66,10 @@ int cli_tcc(int argc, char **argv)
 
     /* as a test, we add a symbol that the compiled program can use.
        You may also open a dll with tcc_add_dll() and use symbols from that */
-	ADD_FUNCTION(s, set_rgb_led);
+	ADD_FUNCTION(s, led);
 	ADD_FUNCTION(s, printf);
 	ADD_FUNCTION(s, sleep);
 	ADD_FUNCTION(s, usleep);
-
-	ADD_VAR(s,  led0);
-	ADD_VAR(s,  led1);
-	ADD_VAR(s,  led2);
-	ADD_VAR(s,  led3);
 
     sscanf(argv[0],"%s", filename);
     debuginf("open file %s\n", filename);
@@ -136,6 +99,7 @@ int cli_tcc(int argc, char **argv)
     }
     /* run the code */
     ret = func(argc--, argv++);
+    debuginf("ret=%d\n", ret);
 
     /* delete the state */
     tcc_delete(s);
@@ -172,10 +136,10 @@ int cli_debug(int argc,char* argv[])
 }
 
 shell_cmd_func_t shell_cmd_func_list[] = {
+	{"led",       "Set led",                           set_led},
 	{"tcc",       "Tiny C compile",                    cli_tcc},
 	{"debug",     "on/off the debug log",              cli_debug},
 	{"help",      "Print Help Manual",                 cli_help},
-    {"ut",        "Unit test of the system",           unit_test},
     {NULL, NULL, NULL}
 };
 
