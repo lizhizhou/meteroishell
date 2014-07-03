@@ -220,6 +220,7 @@ int cli(void) {
         int argc, i=0;
         bzero(buffer, sizeof(buffer));
         printf("Meteroi shell>");
+        fflush(stdout);
         gets_s(buffer, sizeof(buffer));
         argc = parser_cli(buffer,argv);
         if (argc == 0)
