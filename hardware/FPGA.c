@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <stdio.h>
 #include "FPGA.h"
 int* FPGA_MOD_BASE;
 int* FPGA_SYS_BASE;
@@ -63,4 +64,9 @@ void fpga_close()
 	munmap(FPGA_MOD_BASE, ADDRESS_LENGTH);
 }
 
-
+int fpga_download(char* file_name)
+{
+	FILE* file;
+	//file = fopen("/sys/kernel/debug/lophilo/");
+	return 0;
+}

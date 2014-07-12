@@ -36,7 +36,7 @@ typedef struct shell_cmd_t {
 } shell_cmd_func_t;
 extern shell_cmd_func_t shell_cmd_func_list[];
 
-int set_led(int argc, char **argv)
+int cli_led(int argc, char **argv)
 {
 	int id,r,g,b;
 	sscanf(argv[0], "%d",&id);
@@ -45,6 +45,14 @@ int set_led(int argc, char **argv)
 	sscanf(argv[3], "%d",&b);
 	debuginf("id=%d, r=%d g=%d b=%d\n", id, r, g, b);
 	led(id, (char)r,(char)g,(char)b);
+	return (true);
+}
+
+int cli_fpga(int argc, char **argv)
+{
+	char file_path[255];
+	sscanf(argv[0], "%s", file_path);
+	fpga_download(file_path);
 	return (true);
 }
 
@@ -136,7 +144,8 @@ int cli_debug(int argc,char* argv[])
 }
 
 shell_cmd_func_t shell_cmd_func_list[] = {
-	{"led",       "Set led",                           set_led},
+	{"led",       "Set led",                           cli_led},
+	{"fpga",      "FGPA downlaoder",                   cli_fpga},
 	{"tcc",       "Tiny C compile",                    cli_tcc},
 	{"debug",     "on/off the debug log",              cli_debug},
 	{"help",      "Print Help Manual",                 cli_help},

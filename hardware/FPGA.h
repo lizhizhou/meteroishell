@@ -20,6 +20,6 @@ extern int* FPGA_MOD_BASE;
 extern int* FPGA_SYS_BASE;
 extern int fpga_open();
 extern void fpga_close();
-
+extern int fpga_download(char* file_name);
 
 #endif /* FPGA_H_ */
