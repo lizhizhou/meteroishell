@@ -66,7 +66,30 @@ void fpga_close()
 
 int fpga_download(char* file_name)
 {
+	FILE* data;
+	FILE* downlaod;
 	FILE* file;
-	//file = fopen("/sys/kernel/debug/lophilo/");
+	char buffer;
+	data = fopen("/sys/kernel/debug/fpga/data", "wb");
+	downlaod = fopen("/sys/kernel/debug/fpga/download", "wb");
+	if(!data || !downlaod)
+	{
+		printf("FPGA driver error\n");
+		return 0;
+	}
+	file = fopen(file_name,"rb");
+	if(!file)
+	{
+		printf("file %s open error\n", file_name);
+		return 0;
+	}
+	while (fread(&buffer, 1, 1, file))
+	{
+		fwrite(&buffer,1, 1, data);
+	}
+	fclose(data);
+	fwrite("1", 1, 1, downlaod);
+	fclose(downlaod);
+	fclose(file);
 	return 0;
 }
