@@ -11,6 +11,10 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <errno.h>
+#include <unistd.h>
 #include "../hardware/platform.h"
 #include "../hardware/PIO26.h"
 #include "../hardware/shield_ctrl.h"
@@ -54,6 +58,32 @@ int cli_fpga(int argc, char **argv)
 	sscanf(argv[0], "%s", file_path);
 	fpga_download(file_path);
 	return (true);
+}
+
+int cli_sh(int argc, char **argv)
+{
+    pid_t pid;
+    int status;
+    char* cmdstring = argv[0];
+
+    if((pid = fork())<0){
+        status = -1;
+    }
+    else if(pid == 0){
+        execl("/bin/sh", "sh", "-c", cmdstring, (char *)0);
+        _exit(127); //子进程正常执行则不会执行此语句
+    }
+    else
+      {
+       while(waitpid(pid, &status, 0) < 0){
+          if(errno != EINTR)
+            {
+             status = -1;
+             break;
+            }
+          }
+      }
+    return status;
 }
 
 int cli_tcc(int argc, char **argv)
@@ -147,6 +177,7 @@ shell_cmd_func_t shell_cmd_func_list[] = {
 	{"led",       "Set led",                           cli_led},
 	{"fpga",      "FGPA downlaoder",                   cli_fpga},
 	{"tcc",       "Tiny C compile",                    cli_tcc},
+	{"sh"         "Run linux shell command",           cli_sh},
 	{"debug",     "on/off the debug log",              cli_debug},
 	{"help",      "Print Help Manual",                 cli_help},
     {NULL, NULL, NULL}
