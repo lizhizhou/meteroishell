@@ -15,6 +15,8 @@
 #include <sys/wait.h>
 #include <errno.h>
 #include <unistd.h>
+#include "debug.h"
+#include "linenoise.h"
 #include "../hardware/platform.h"
 #include "../hardware/PIO26.h"
 #include "../hardware/shield_ctrl.h"
@@ -28,7 +30,6 @@
 #include "../hardware/unit_test.h"
 #include "../tcc/libtcc.h"
 #include "../api/lophilo.h"
-#include "debug.h"
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -183,6 +184,15 @@ shell_cmd_func_t shell_cmd_func_list[] = {
     {NULL, NULL, NULL}
 };
 
+void completion(const char *buf, linenoiseCompletions *lc) {
+	shell_cmd_func_t *func = shell_cmd_func_list;
+    while (func->name) {
+		if (buf[0] == func->name[0]) {
+			linenoiseAddCompletion(lc, func->name[0]);
+		}
+    }
+}
+
 #define CLI_BUFFER_SIZE 1024
 #define ARG_LIST_SIZE 20
 static int cmd_distribution (int argc, char *argv[])
@@ -238,48 +248,57 @@ static int parser_cli(char* buffer, char* argv[])
     return (i);
 }
 
-int gets_s(char* buffer, int buf_size)
-{
-    int i;
-    for (i = 0; i < buf_size; i++) {
-        *buffer = getchar();
-        if (*buffer == '\n')
-            break;
-        buffer++;
-    }
-    *buffer = '\0';
-    return (i);
-}
-
 int cli(void) {
-    char buffer[CLI_BUFFER_SIZE];
+    char *line;
     char *argv[ARG_LIST_SIZE];
+    int argc, i=0;
 
-    while(1)
-    {
-        int argc, i=0;
-        bzero(buffer, sizeof(buffer));
-        printf("Meteroi shell>");
-        fflush(stdout);
-        gets_s(buffer, sizeof(buffer));
-        argc = parser_cli(buffer,argv);
-        if (argc == 0)
-            continue;
-        debuginf("argc=%d\n",argc);
-        while(i < argc ) {
-            char cmd_name[256];
-            sscanf(argv[i],"%256s ", cmd_name);
-            debuginf("arg[%d] = %s\n", i, cmd_name);
-            i++;
+    /* Set the completion callback. This will be called every time the
+     * user uses the <tab> key. */
+    linenoiseSetCompletionCallback(completion);
+
+    /* Load history from file. The history file is just a plain text file
+     * where entries are separated by newlines. */
+    linenoiseHistoryLoad("history.txt"); /* Load the history at startup */
+
+    /* Now this is the main loop of the typical linenoise-based application.
+     * The call to linenoise() will block as long as the user types something
+     * and presses enter.
+     *
+     * The typed string is returned as a malloc() allocated string by
+     * linenoise, so the user needs to free() it. */
+    while((line = linenoise("Meteroi shell>")) != NULL) {
+        /* Do something with the string. */
+        if (line[0] != '\0' && line[0] != '/') {
+        	debuginf("echo: '%s'\n", line);
+            argc = parser_cli(line,argv);
+            if (argc == 0)
+                continue;
+            debuginf("argc=%d\n",argc);
+            while(i < argc ) {
+                char cmd_name[256];
+                sscanf(argv[i],"%256s ", cmd_name);
+                debuginf("arg[%d] = %s\n", i, cmd_name);
+                i++;
+            }
+            if(strcmp(line,"exit")==0)
+            {
+                break;
+            } else {
+            	//pthread_mutex_lock(&mutex);
+                cmd_distribution(argc, argv);
+                //pthread_mutex_unlock(&mutex);
+            }
+            linenoiseHistoryAdd(line); /* Add to the history. */
+            linenoiseHistorySave("history.txt"); /* Save the history on disk. */
+        } else if (!strncmp(line,"/historylen",11)) {
+            /* The "/historylen" command will change the history len. */
+            int len = atoi(line+11);
+            linenoiseHistorySetMaxLen(len);
+        } else if (line[0] == '/') {
+            printf("Unreconized command: %s\n", line);
         }
-        if(strcmp(buffer,"exit")==0)
-        {
-            break;
-        } else {
-        	//pthread_mutex_lock(&mutex);
-            cmd_distribution(argc, argv);
-            //pthread_mutex_unlock(&mutex);
-        }
+        free(line);
     }
     return (true);
 }
