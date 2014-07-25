@@ -188,8 +188,10 @@ void completion(const char *buf, linenoiseCompletions *lc) {
 	shell_cmd_func_t *func = shell_cmd_func_list;
     while (func->name) {
 		if (buf[0] == func->name[0]) {
-			linenoiseAddCompletion(lc, func->name[0]);
+			linenoiseAddCompletion(lc, func->name);
+            break;
 		}
+        func++;
     }
 }
 
