@@ -22,8 +22,7 @@ int main(int argn, char* argv[])
 	shield_ctrl_init();
 	if(argn == 1)
 		cli();
-	else
-	{
+	else {
 		cli_tcc(--argn, ++argv);
 	}
 	fpga_close();

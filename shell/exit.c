@@ -54,7 +54,6 @@ void signal_handler(int signo)
            	 break;
         case SIGCHLD:
              //处理子进程退出
-             exit(0);
              break;
         default:
         	 printf("%d signal unregister\n", signo);

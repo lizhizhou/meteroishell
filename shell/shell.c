@@ -72,19 +72,16 @@ int cli_sh(int argc, char **argv)
     }
     else if(pid == 0){
         execl("/bin/sh", "sh", "-c", cmdstring, (char *)0);
-        _exit(127); //子进程正常执行则不会执行此语句
+    } else {
+        while(waitpid(pid, &status, 0) < 0){
+			if(errno != EINTR) {
+				printf("shell command error\n");
+				status = -1;
+				break;
+			}
+		}
     }
-    else
-      {
-       while(waitpid(pid, &status, 0) < 0){
-          if(errno != EINTR)
-            {
-             status = -1;
-             break;
-            }
-          }
-      }
-    return status;
+    return (status == 0?true:false);
 }
 
 int cli_tcc(int argc, char **argv)
@@ -229,17 +226,17 @@ static int cmd_distribution (int argc, char *argv[])
 static int parser_cli(char* buffer, char* argv[])
 {
     int i = 0;
-    if (strlen(buffer) == 0)
+    if (strlen(buffer) == 0) {
         return (0);
+    }
     argv[i] = buffer;
     i++;
-    while(*buffer!='\0')
-    {
+    while(*buffer!='\0') {
         buffer++;
         if(isspace(*buffer)) {
             while(*buffer!='\0') {
                 buffer++;
-                if(!isspace(*buffer) && *buffer !='\0'){
+                if(!isspace(*buffer) && *buffer !='\0') {
                     argv[i] = buffer;
                     i++;
                     break;
@@ -258,17 +255,8 @@ int cli(void) {
     /* Set the completion callback. This will be called every time the
      * user uses the <tab> key. */
     linenoiseSetCompletionCallback(completion);
-
-    /* Load history from file. The history file is just a plain text file
-     * where entries are separated by newlines. */
-    linenoiseHistoryLoad("history.txt"); /* Load the history at startup */
-
-    /* Now this is the main loop of the typical linenoise-based application.
-     * The call to linenoise() will block as long as the user types something
-     * and presses enter.
-     *
-     * The typed string is returned as a malloc() allocated string by
-     * linenoise, so the user needs to free() it. */
+    /* Load the history at startup */
+    linenoiseHistoryLoad("history.txt");
     while((line = linenoise("Meteroi shell>")) != NULL) {
         /* Do something with the string. */
         if (line[0] != '\0' && line[0] != '/') {
@@ -287,9 +275,9 @@ int cli(void) {
             {
                 break;
             } else {
-            	//pthread_mutex_lock(&mutex);
+            	pthread_mutex_lock(&mutex);
                 cmd_distribution(argc, argv);
-                //pthread_mutex_unlock(&mutex);
+                pthread_mutex_unlock(&mutex);
             }
             linenoiseHistoryAdd(line); /* Add to the history. */
             linenoiseHistorySave("history.txt"); /* Save the history on disk. */
