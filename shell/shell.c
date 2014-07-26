@@ -178,7 +178,7 @@ shell_cmd_func_t shell_cmd_func_list[] = {
 	{"led",       "Set led",                           cli_led},
 	{"fpga",      "FGPA downlaoder",                   cli_fpga},
 	{"tcc",       "Tiny C compile",                    cli_tcc},
-	{"sh"         "Run linux shell command",           cli_sh},
+	{"sh",        "Run linux shell command",           cli_sh},
 	{"debug",     "on/off the debug log",              cli_debug},
 	{"help",      "Print Help Manual",                 cli_help},
     {NULL, NULL, NULL}
