@@ -36,9 +36,22 @@ void led(int id, char r, char g, char b)
 	set_rgb_led(address,r,g,b);
 }
 
-void io(int id, int value)
+void ioa(int id, int value)
 {
+	IOA_OE |= 0x01 << id;
+	if(0x1 & value)
+		IOA_DATA |= 0x01 << id;
+	else
+		IOA_DATA &= ~(0x01 << id);
+}
 
+void iob(int id, int value)
+{
+	IOB_OE |= 0x01 << id;
+	if(0x1 & value)
+		IOB_DATA |= 0x01 << id;
+	else
+		IOB_DATA &= ~(0x01 << id);
 }
 
 void pwm(int id, int pwm)
@@ -62,4 +75,28 @@ void pwm(int id, int pwm)
 		    return;
 	}
 
+}
+
+float temp(int id)
+{
+	switch (id) {
+		case 0:
+			return sht1x_get_temperature(SHT1X_0);
+		case 1:
+			return sht1x_get_temperature(SHT1X_1);
+		default:
+		    return 0;
+	}
+}
+
+float mois(int id)
+{
+	switch (id) {
+		case 0:
+			return sht1x_get_moisture(SHT1X_0);
+		case 1:
+			return sht1x_get_moisture(SHT1X_1);
+		default:
+		    return 0;
+	}
 }

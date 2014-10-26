@@ -16,11 +16,17 @@
 //b: The blue color of led
 void led(int id, char r, char g, char b);
 
-//Functionality: Control the IO port
+//Functionality: Control the IO port a
 //Argument:
 //id: use 0-26
 //value: Can be 1 or 0
-void io(int id, int value);
+void ioa(int id, int value);
+
+//Functionality: Control the IO port b
+//Argument:
+//id: use 0-26
+//value: Can be 1 or 0
+void iob(int id, int value);
 
 //Functionality: print the string to the console
 //Argument:
