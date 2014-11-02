@@ -14,6 +14,12 @@
 #include "../hardware/step_motor.h"
 #include "../hardware/brush_motor.h"
 #include "../hardware/fan_motor.h"
+
+int init(void)
+{
+	return fpga_open();
+}
+
 void led(int id, char r, char g, char b)
 {
 	void* address;

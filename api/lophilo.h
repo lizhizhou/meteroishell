@@ -8,6 +8,9 @@
 #ifndef LOPHILO_H_
 #define LOPHILO_H_
 
+//Functionality: Initial the broad
+void init(void);
+
 //Functionality: Control the led
 //Argument:
 //id: The id of led can be 0-3
