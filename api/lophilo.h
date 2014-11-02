@@ -9,7 +9,7 @@
 #define LOPHILO_H_
 
 //Functionality: Initial the broad
-void init(void);
+int init(void);
 
 //Functionality: Control the led
 //Argument:
