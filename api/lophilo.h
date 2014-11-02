@@ -34,7 +34,7 @@ void iob(int id, int value);
 //Functionality: print the string to the console
 //Argument:
 //format:output format string
-int printf(const char* format, ...);
+int print(const char* format, ...);
 
 //Functionality: Sleep for seconds
 //Argument:
