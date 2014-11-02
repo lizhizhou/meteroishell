@@ -27,7 +27,6 @@ int print(const char* format, ...)
     va_list ap;
     int retval;
     va_start(ap, format);
-    printf("my_printf():");
     retval = vprintf(format, ap);
     fflush(stdout);
     va_end(ap);
