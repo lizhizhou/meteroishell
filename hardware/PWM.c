@@ -8,7 +8,7 @@
 #include "FPGA.h"
 #define PWM_CTRL_ADDRESS pwm_address//0x100
 #define PWM_ID            *((volatile int*) PWM_CTRL_ADDRESS+1)
-#define PWM_STATE         *((volatile int*) PWM_CTRL_ADDRESS+3)
+#define PWM_STATE         *((volatile int*) PWM_CTRL_ADDRESS+2)
 #define PWM_GATE          *((volatile int*) PWM_CTRL_ADDRESS+3)
 #define PWM_DUTYCYCLE     *((volatile int*) PWM_CTRL_ADDRESS+4)
 

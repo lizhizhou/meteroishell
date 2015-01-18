@@ -7,7 +7,7 @@
 #include <stdint.h>
 #include "FPGA.h"
 #include "AM2301.h"
-#define AM2301_ADDRESS AM2301_address//0x220
+#define AM2301_ADDRESS AM2301_address
 #define AM2301_ID      *((volatile int*) AM2301_address+1)
 #define AM2301_DATA    *((volatile int*) AM2301_address+3)
 #define AM2301_READY   *((volatile int*) AM2301_address+4)
