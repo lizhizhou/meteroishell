@@ -9,10 +9,10 @@
 #define AD7490_ADDRESS         AD7490_address
 #define AD7490_ID              *((volatile int*)   AD7490_ADDRESS+1)
 #define AD7490_ADC_CTRL        *((volatile int*)   AD7490_ADDRESS+2)
-#define AD7490_RESET           *((volatile char*)  AD7490_ADC_CTRL+0)
-#define AD7490_CODING          *((volatile char*)  AD7490_ADC_CTRL+1)
-#define AD7490_RANG            *((volatile char*)  AD7490_ADC_CTRL+2)
-#define AD7490_CONVERTING_ADC  *((volatile char*)  AD7490_ADC_CTRL+3)
+#define AD7490_RESET           *((volatile char*)  &AD7490_ADC_CTRL+0)
+#define AD7490_CODING          *((volatile char*)  &AD7490_ADC_CTRL+1)
+#define AD7490_RANG            *((volatile char*)  &AD7490_ADC_CTRL+2)
+#define AD7490_CONVERTING_ADC  *((volatile char*)  &AD7490_ADC_CTRL+3)
 #define AD7490_CNV_DELAY       *((volatile int*)   AD7490_ADDRESS+3)
 #define AD7490_CH_BASE         *((volatile short*) AD7490_ADDRESS+8)
 
@@ -34,6 +34,6 @@ uint16_t AD7490_get_data(void* AD7490_address, int channel)
 {
 	if(channel < 0 || channel > 15)
 		return (0);
-	uint16_t data = *(AD7490_CH_BASE + channel);
+	uint16_t data = *(&AD7490_CH_BASE + channel);
 	return (0xfff & data);  //12bit ADC data;
 }

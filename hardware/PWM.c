@@ -12,10 +12,10 @@
 #define PWM_GATE          *((volatile int*) PWM_CTRL_ADDRESS+3)
 #define PWM_DUTYCYCLE     *((volatile int*) PWM_CTRL_ADDRESS+4)
 
-#define PWM_RESET         *((volatile char*) PWM_STATE)
-#define PWM_OUT_INV       *((volatile char*) PWM_STATE+1)
-#define PWM_DUTYCYCLE_EN  *((volatile char*) PWM_STATE+2)
-#define PWM_GATE_EN       *((volatile char*) PWM_STATE+3)
+#define PWM_RESET         *((volatile char*) &PWM_STATE)
+#define PWM_OUT_INV       *((volatile char*) &PWM_STATE+1)
+#define PWM_DUTYCYCLE_EN  *((volatile char*) &PWM_STATE+2)
+#define PWM_GATE_EN       *((volatile char*) &PWM_STATE+3)
 
 void PWM_init(void* pwm_address)
 {
