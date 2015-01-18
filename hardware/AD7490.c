@@ -4,8 +4,9 @@
  *  Created on: Jan 17, 2015
  *      Author: zhizhouli
  */
-#include <stdint.h>
+
 #include "FPGA.h"
+#include "AD7490.h"
 #define AD7490_ADDRESS         AD7490_address
 #define AD7490_ID              *((volatile int*)   AD7490_ADDRESS+1)
 #define AD7490_ADC_CTRL        *((volatile int*)   AD7490_ADDRESS+2)

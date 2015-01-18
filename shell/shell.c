@@ -27,6 +27,7 @@
 #include "../hardware/step_motor.h"
 #include "../hardware/brush_motor.h"
 #include "../hardware/fan_motor.h"
+#include "../hardware/AD7490.h"
 #include "../hardware/unit_test.h"
 #include "../tcc/libtcc.h"
 #include "../api/lophilo.h"
@@ -50,6 +51,17 @@ int cli_led(int argc, char **argv)
 	sscanf(argv[3], "%d",&b);
 	debuginf("id=%d, r=%d g=%d b=%d\n", id, r, g, b);
 	led(id, (char)r,(char)g,(char)b);
+	return (true);
+}
+
+int cli_adc(int argc, char **argv)
+{
+	AD7490_init(ADC7490_0);
+	sleep(1);
+	printf("adc1 = %d\n",AD7490_get_data(ADC7490_0,0));
+	printf("adc2 = %d\n",AD7490_get_data(ADC7490_0,1));
+	printf("adc3 = %d\n",AD7490_get_data(ADC7490_0,2));
+	printf("adc4 = %d\n",AD7490_get_data(ADC7490_0,3));
 	return (true);
 }
 
@@ -176,6 +188,7 @@ shell_cmd_func_t shell_cmd_func_list[] = {
 	{"fpga",      "FGPA downlaoder",                   cli_fpga},
 	{"tcc",       "Tiny C compile",                    cli_tcc},
 	{"sh",        "Run linux shell command",           cli_sh},
+	{"adc",       "GEt ADC data",                      cli_adc},
 	{"debug",     "on/off the debug log",              cli_debug},
 	{"help",      "Print Help Manual",                 cli_help},
     {NULL, NULL, NULL}
