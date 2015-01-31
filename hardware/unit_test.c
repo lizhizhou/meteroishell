@@ -10,6 +10,18 @@
 #include "../lib/coordinate.h"
 #include "led.h"
 
+void AD7940_test()
+{
+	int i;
+	AD7490_init(ADC7490_0);
+    while(1)
+    {
+        sleep(1);
+        for(i = 0; i < 16; i++)
+        	printf("ADC channel %d data is %d", i, AD7490_get_data(ADC7490_0, i));
+    }
+}
+
 void AM2301_test()
 {
     AM2301_init(AM2301_0);

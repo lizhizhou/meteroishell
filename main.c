@@ -20,6 +20,7 @@ int main(int argn, char* argv[])
 		exit(1);
 	}
 	shield_ctrl_init();
+	AD7940_test();
 	if(argn == 1)
 		cli();
 	else {
