@@ -15,7 +15,7 @@
 #define AD7490_RANG            *((volatile char*)  &AD7490_ADC_CTRL+2)
 #define AD7490_CONVERTING_ADC  *((volatile char*)  &AD7490_ADC_CTRL+3)
 #define AD7490_CNV_DELAY       *((volatile int*)   AD7490_ADDRESS+3)
-#define AD7490_CH_BASE         *((volatile short*) AD7490_ADDRESS+8)
+#define AD7490_CH_BASE         *((volatile short*) AD7490_ADDRESS+16)
 
 void AD7490_reset(void* AD7490_address)
 {
@@ -25,10 +25,13 @@ void AD7490_reset(void* AD7490_address)
 
 void AD7490_init(void* AD7490_address)
 {
+	printf("id = 0x%x\n", AD7490_ID);
 	AD7490_reset(AD7490_address);
-	AD7490_CNV_DELAY = 255;
+	AD7490_CNV_DELAY = 2;
 	AD7490_RANG = 0;   //0 for 0-2* Vref 1 fpr 0-Vref
 	AD7490_CODING = 1; //1 for Natural Binary 2 for Twos Complement
+	printf("ctrl = 0x%x\n", AD7490_ADC_CTRL);
+	printf("delay = 0x%x\n", AD7490_CNV_DELAY);
 }
 
 uint16_t AD7490_get_data(void* AD7490_address, int channel)

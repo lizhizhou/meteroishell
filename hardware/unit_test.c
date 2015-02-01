@@ -18,7 +18,8 @@ void AD7940_test()
     {
         sleep(1);
         for(i = 0; i < 16; i++)
-        	printf("ADC channel %d data is %d", i, AD7490_get_data(ADC7490_0, i));
+        	printf("ADC channel %d data is %d\n", i,
+        			AD7490_get_data(ADC7490_0, i));
     }
 }
 
