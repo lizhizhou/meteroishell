@@ -12,5 +12,5 @@
 extern void AD7490_reset(void* AD7490_address);
 extern void AD7490_init(void* AD7490_address);
 extern uint16_t AD7490_get_data(void* AD7490_address, int channel);
-
+extern float AD7490_get_voltage(void* AD7490_address, int channel);
 #endif /* AD7490_H_ */

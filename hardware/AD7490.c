@@ -41,3 +41,11 @@ uint16_t AD7490_get_data(void* AD7490_address, int channel)
 	uint16_t data = *(&AD7490_CH_BASE + channel);
 	return (0xfff & data);  //12bit ADC data;
 }
+
+float AD7490_get_voltage(void* AD7490_address, int channel)
+{
+	float resualt;
+	resualt = AD7490_get_data(AD7490_address, channel);
+	return (resualt*5.0/0xfff);
+
+}
