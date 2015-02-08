@@ -13,6 +13,7 @@
 #include "PIO8.h"
 #include "shield_ctrl.h"
 #include "AM2301.h"
+#include "AD7490.h"
 #include "sht1x.h"
 #include "position_sensor.h"
 #include "step_motor.h"
